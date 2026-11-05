@@ -1,13 +1,13 @@
-# 🚀 Hermes Tailscale 终极无缝连接指南（姿势二：免装代理、一键透明出海）
+# 🚀 Hermes Tailscale 出口节点方案：手机免装代理、一键无感出海
 
-> **方案定位**：**姿势二（独立完整版）** —— 手机端**零门槛、免装 Clash、免碰任何 YAML 文件**！  
-> 仅需手机安装官方 Tailscale App，连回家里常开的电脑/软路由，即可实现「手机在外随时直连家里 Hermes Agent」与「无感透明出海科学上网」二合一。
+> **核心特性**：**手机端零配置、免装 Clash、免碰任何 YAML 文件**！  
+> 手机仅需安装一个官方 Tailscale App，连回家里常开的电脑/软路由，即可实现「在外随时直连家里 Hermes Agent」与「无感透明出海科学上网」二合一。
 
 ---
 
-## 🌟 为什么叫“终极无缝流”？
+## 🌟 方案核心优势：极简无缝
 
-传统方案往往需要手机端折腾复杂的代理软件、配置规则或申请公网 IPv6。而**姿势二**彻底颠覆了这种逻辑：
+传统方案往往需要手机端折腾复杂的代理软件、配置规则或申请公网 IPv6。而**出口节点方案（Exit Node）**彻底简化了这种逻辑：
 
 ```mermaid
 flowchart LR
@@ -26,27 +26,20 @@ flowchart LR
 
 家里电脑正常运行 **Hermes Desktop / Agent**，并按以下步骤开启出口节点：
 
-### 1. 开启系统底层 IP 转发（IP Forwarding）
-在电脑上以管理员身份打开 PowerShell，运行：
-```powershell
-# 开启系统路由转发功能
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "IPEnableRouter" -Value 1
-```
-
-### 2. 声明电脑为出口节点（Exit Node）
+### 1. 声明电脑为出口节点（Exit Node）
 运行以下命令让这台电脑向你的 Tailscale 私有网广播出口能力：
 ```powershell
 & "C:\Program Files\Tailscale\tailscale.exe" up --advertise-exit-node --unattended
 ```
-*(注：`--unattended` 保证在电脑锁屏或睡眠唤醒时后台持续稳定运行)*
+*(注：`--unattended` 保证在电脑锁屏或睡眠唤醒时后台持续稳定运行，无需更改注册表)*
 
-### 3. 网页后台批准出口节点（关键一步）
+### 2. 网页后台批准出口节点（关键一步）
 1. 打开浏览器进入 Tailscale 控制台：[login.tailscale.com/admin/machines](https://login.tailscale.com/admin/machines)；
 2. 找到你的电脑设备名称；
 3. 点击右侧的 **`...`**（三个点），选择 **`Edit route settings...`**；
 4. 勾选 **`Use as exit node`**（允许作为出口节点）并保存。
 
-### 4. 路由器开启 UPnP（保障 4G/5G 满速直连）
+### 3. 路由器开启 UPnP（保障 4G/5G 满速直连）
 * 登录家里路由器后台，找到 **UPnP 设置** 并确保**开启**；
 * *（这能确保手机在外部使用移动蜂窝流量时，能与家里电脑瞬间建立 P2P 直连打洞，避免掉入 600ms 的拥堵中继）。*
 
@@ -72,7 +65,7 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
 ```markdown
 # 任务目标：配置本地电脑为 Tailscale 出口节点（实现手机免装代理、一键透明翻墙）
 
-## 一、方案核心场景（姿势二）
+## 一、方案核心场景
 用户在外面的手机上**不安装、不运行任何代理软件（无需 Clash，无 YAML 文件）**，仅运行一个官方 Tailscale App。
 家里的常开电脑（Windows/Linux/Mac）已具备正常科学上网能力。
 目标：将家里电脑配置为 Tailscale 出口节点（Exit Node），手机在外只需连上 Tailscale，即可无感访问家里内网（如 Hermes Agent），并直接复用家里电脑的网络透明出海。
@@ -84,13 +77,10 @@ Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
 1. **一键开启电脑的出口节点广播**：
    - Windows/Linux 命令行运行：
      `tailscale up --advertise-exit-node --unattended`
-2. **开启系统底层 IP 转发（IP Forwarding）**：
-   - Windows：开启注册表 `IPEnableRouter = 1` 并放行系统网络转发；
-   - Linux：开启 `net.ipv4.ip_forward = 1`。
-3. **后台批准出口节点（网页端一键操作）**：
+2. **后台批准出口节点（网页端一键操作）**：
    - 提醒用户打开 Tailscale 控制台（https://login.tailscale.com/admin/machines）；
    - 找到当前电脑 -> 点击 `...` -> `Edit route settings` -> 勾选 `Use as exit node` 并保存。
-4. **路由器 NAT 穿透建议**：
+3. **路由器 NAT 穿透建议**：
    - 提醒用户在家里路由器后台开启 **UPnP**（或映射 UDP 41641），确保手机在外部 4G/5G 蜂窝网络下能秒级穿透直连电脑，不卡顿、不走中继。
 
 ---
